@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 import { registerValidation } from "./validations/auth.js";
 import bcrypt from "bcrypt";
 import userModel from "./models/User.js";
+import checkAuth from "./utils/checkAuth.js";
 
 const connectDB = async () => {
   try {
@@ -20,6 +21,24 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+
+app.get("/profile", checkAuth, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId);
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const { passwordHash, __v, ...userData } = user._doc;
+
+    res.json(userData);
+  } catch (error) {
+    res.status(403).json({ message: "Not access !" });
+  }
+});
 
 app.post("/auth/login", async (req, res) => {
   try {

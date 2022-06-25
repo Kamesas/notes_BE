@@ -1,25 +1,66 @@
-import express from "express";
+import express, { response } from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { validationResult } from "express-validator";
 import { registerValidation } from "./validations/auth.js";
 import bcrypt from "bcrypt";
-
 import userModel from "./models/User.js";
 
-mongoose
-  .connect(
-    "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"
-  )
-  .then(() => {
+const connectDB = async () => {
+  try {
+    const url = "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"; // prettier-ignore
+    await mongoose.connect(url);
     console.log("DB connected!");
-  })
-  .catch((err) => {
+  } catch (error) {
     console.log("DB connect failure!", err);
-  });
+  }
+};
+
+connectDB();
 
 const app = express();
 app.use(express.json());
+
+app.post("/auth/login", async (req, res) => {
+  try {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found !",
+      });
+    }
+
+    const iValidPass = await bcrypt.compare(
+      req.body.password,
+      user._doc.passwordHash
+    );
+
+    if (!iValidPass) {
+      res.status(404).json({
+        massage: "Email or login is incorrect !",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      "secretUserId",
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    const { passwordHash: pass, __v, ...userData } = user._doc;
+
+    res.json({ ...userData, token });
+  } catch (error) {
+    response.status(500).json({
+      message: "Invalid data",
+      error,
+    });
+  }
+});
 
 app.post("/auth/register", registerValidation, async (req, res) => {
   try {

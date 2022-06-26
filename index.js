@@ -9,6 +9,9 @@ import handleValidationError from "./utils/handleValidationError.js";
 import multer from "multer";
 import cors from "cors";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const connectDB = async () => {
   try {
     const url = "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"; // prettier-ignore
@@ -66,7 +69,7 @@ app.patch(
   update
 );
 
-const PORT = "8000";
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`[server]: Server is running at http://localhost:${PORT}`);
 });

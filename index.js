@@ -14,7 +14,6 @@ dotenv.config();
 
 // const connectDB = async () => {
 //   try {
-//     // const url = "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"; // prettier-ignore
 //     const url = process.env?.MONGO_DB_URI; // prettier-ignore
 //     await mongoose.connect(url);
 //     console.log("DB connected!");

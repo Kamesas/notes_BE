@@ -12,26 +12,30 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-// const connectDB = async () => {
-//   try {
-//     const url = process.env?.MONGO_DB_URI; // prettier-ignore
-//     await mongoose.connect(url);
-//     console.log("DB connected!");
-//   } catch (error) {
-//     console.log("DB connect failure!", error);
-//   }
-// };
+const connectDB = async () => {
+  try {
+    const url = process.env?.MONGO_DB_URI; // prettier-ignore
+    await mongoose.connect(url);
+    console.log("DB connected!", process.env.NODE_ENV);
+  } catch (error) {
+    console.log("DB connect failure!", error);
+  }
+};
 
-// connectDB();
+connectDB();
 
-mongoose
-  .connect(process.env.MONGO_DB_URI)
-  .then(() => console.log("DB ok"))
-  .catch((err) => console.log("DB error", err));
+// mongoose
+//   .connect(process.env.MONGO_DB_URI)
+//   .then(() => console.log("DB ok"))
+//   .catch((err) => console.log("DB error", err));
 
 const app = express();
 app.use(express.json());
-// app.use(cors());
+
+if (process.env.NODE_ENV !== "production") {
+  // require('dotenv').config();
+  app.use(cors());
+}
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {

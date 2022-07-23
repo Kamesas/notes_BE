@@ -12,18 +12,23 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-const connectDB = async () => {
-  try {
-    // const url = "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"; // prettier-ignore
-    const url = process.env?.MONGO_DB_URI; // prettier-ignore
-    await mongoose.connect(url);
-    console.log("DB connected!");
-  } catch (error) {
-    console.log("DB connect failure!", error);
-  }
-};
+// const connectDB = async () => {
+//   try {
+//     // const url = "mongodb+srv://admin:Password1@cluster0.j9t1y.mongodb.net/notes?retryWrites=true&w=majority"; // prettier-ignore
+//     const url = process.env?.MONGO_DB_URI; // prettier-ignore
+//     await mongoose.connect(url);
+//     console.log("DB connected!");
+//   } catch (error) {
+//     console.log("DB connect failure!", error);
+//   }
+// };
 
-connectDB();
+// connectDB();
+
+mongoose
+  .connect(process.env.MONGO_DB_URI)
+  .then(() => console.log("DB ok"))
+  .catch((err) => console.log("DB error", err));
 
 const app = express();
 app.use(express.json());

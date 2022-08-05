@@ -10,11 +10,22 @@ const WordsSchema = new mongoose.Schema(
     ukraineWord: {
       type: String,
     },
+    explanationWord: {
+      type: String,
+    },
     learned: {
       type: Boolean,
       default: false,
     },
+    isLearning: {
+      type: Boolean,
+      default: false,
+    },
     isTop3000: {
+      type: Boolean,
+      default: false,
+    },
+    isTop5000: {
       type: Boolean,
       default: false,
     },
